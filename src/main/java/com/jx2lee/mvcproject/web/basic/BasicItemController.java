@@ -1,6 +1,7 @@
 package com.jx2lee.mvcproject.web.basic;
 
 import com.jx2lee.mvcproject.domain.item.Item;
+import com.jx2lee.mvcproject.domain.item.ItemParamDto;
 import com.jx2lee.mvcproject.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -93,10 +94,21 @@ public class BasicItemController {
         return "basic/item";
     }
 
+    @GetMapping("/{itemId}/edit")
+    public String editForm(@PathVariable Long itemId, Model model) {
 
+        Item item = itemRepository.findById(itemId);
+        model.addAttribute("item", item);
 
+        return "basic/editForm";
+    }
 
+    @PostMapping("/{itemId}/edit")
+    public String updateItem(@PathVariable Long itemId, @ModelAttribute Item item) {
 
+        itemRepository.update(itemId, new ItemParamDto(item.getItemName(), item.getPrice(), item.getQuantity()));
+        return "redirect:/basic/items/{itemId}";
+    }
 
     /**
      * 테스트용 데이터
